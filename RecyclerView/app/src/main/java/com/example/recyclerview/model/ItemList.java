@@ -1,6 +1,8 @@
 package com.example.recyclerview.model;
 
-public class ItemList {
+import java.io.Serializable;
+
+public class ItemList implements Serializable {
     private String titulo;
     private String descripcion;
     private int imgResource;

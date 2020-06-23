@@ -1,5 +1,6 @@
 package com.example.recyclerview.adaptador;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recyclerview.R;
+import com.example.recyclerview.activity.DetailActivity;
 import com.example.recyclerview.model.ItemList;
 
 import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder> {
     private List<ItemList> items;
+    private RecyclerItemClick itemClick;
 
-    public RecyclerAdapter(List<ItemList> items) {
+    public RecyclerAdapter(List<ItemList> items, RecyclerItemClick itemClick) {
         this.items = items;
+        this.itemClick = itemClick;
     }
 
     @NonNull
@@ -29,11 +33,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerHolder holder, int position) {
-        ItemList item = items.get(position);
+    public void onBindViewHolder(@NonNull final RecyclerHolder holder, final int position) {
+        final ItemList item = items.get(position);
         holder.imgItem.setImageResource(item.getImgResource());
         holder.tvTitulo.setText(item.getTitulo());
         holder.tvDescripcion.setText(item.getDescripcion());
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClick.itemClick(item);
+            }
+        });
+
+        /*holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(holder.itemView.getContext(), DetailActivity.class);
+                intent.putExtra("itemDetail", item);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });*/
     }
 
     @Override
@@ -46,12 +67,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         private TextView tvTitulo;
         private TextView tvDescripcion;
 
-        public RecyclerHolder(@NonNull View itemView) {
-            super(itemView);
+        public RecyclerHolder(@NonNull View itemView_1) {
+            super(itemView_1);
 
             imgItem = itemView.findViewById(R.id.imgItem);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
         }
+    }
+
+    public interface RecyclerItemClick {
+        void itemClick(ItemList item);
     }
 }

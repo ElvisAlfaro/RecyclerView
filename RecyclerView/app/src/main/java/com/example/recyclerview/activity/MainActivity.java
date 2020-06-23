@@ -1,19 +1,20 @@
-package com.example.recyclerview;
+package com.example.recyclerview.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.LinearLayout;
 
+import com.example.recyclerview.R;
 import com.example.recyclerview.adaptador.RecyclerAdapter;
 import com.example.recyclerview.model.ItemList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerAdapter.RecyclerItemClick {
     private RecyclerView rvLista;
     private RecyclerAdapter adapter;
     private List<ItemList> items;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         rvLista.setLayoutManager(manager);
 
         items = getItems();
-        adapter = new RecyclerAdapter(items);
+        adapter = new RecyclerAdapter(items, this);
         rvLista.setAdapter(adapter);
     }
 
@@ -58,4 +59,10 @@ public class MainActivity extends AppCompatActivity {
         return itemLists;
     }
 
+    @Override
+    public void itemClick(ItemList item) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra("itemDetail", item);
+        startActivity(intent);
+    }
 }
