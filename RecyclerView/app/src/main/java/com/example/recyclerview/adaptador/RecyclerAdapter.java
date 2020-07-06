@@ -1,6 +1,7 @@
 package com.example.recyclerview.adaptador;
 
 import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +15,20 @@ import com.example.recyclerview.R;
 import com.example.recyclerview.activity.DetailActivity;
 import com.example.recyclerview.model.ItemList;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerHolder> {
     private List<ItemList> items;
+    private List<ItemList> originalItems;
     private RecyclerItemClick itemClick;
 
     public RecyclerAdapter(List<ItemList> items, RecyclerItemClick itemClick) {
         this.items = items;
         this.itemClick = itemClick;
+        this.originalItems = new ArrayList<>();
+        originalItems.addAll(items);
     }
 
     @NonNull
@@ -61,6 +67,33 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public int getItemCount() {
         return items.size();
     }
+
+    public void filter(final String strSearch) {
+        if (strSearch.length() == 0) {
+            items.clear();
+            items.addAll(originalItems);
+        }
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                items.clear();
+                List<ItemList> collect = originalItems.stream()
+                        .filter(i -> i.getTitulo().toLowerCase().contains(strSearch))
+                        .collect(Collectors.toList());
+
+                items.addAll(collect);
+            }
+            else {
+                items.clear();
+                for (ItemList i : originalItems) {
+                    if (i.getTitulo().toLowerCase().contains(strSearch)) {
+                        items.add(i);
+                    }
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 
     public class RecyclerHolder extends RecyclerView.ViewHolder {
         private ImageView imgItem;
