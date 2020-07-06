@@ -1,6 +1,7 @@
 package com.example.recyclerview.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,8 +15,9 @@ import com.example.recyclerview.model.ItemList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RecyclerAdapter.RecyclerItemClick {
+public class MainActivity extends AppCompatActivity implements RecyclerAdapter.RecyclerItemClick, SearchView.OnQueryTextListener {
     private RecyclerView rvLista;
+    private SearchView svSearch;
     private RecyclerAdapter adapter;
     private List<ItemList> items;
 
@@ -26,10 +28,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.R
 
         initViews();
         initValues();
+        initListener();
     }
 
     private void initViews(){
         rvLista = findViewById(R.id.rvLista);
+        svSearch = findViewById(R.id.svSearch);
     }
 
     private void initValues() {
@@ -39,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.R
         items = getItems();
         adapter = new RecyclerAdapter(items, this);
         rvLista.setAdapter(adapter);
+    }
+
+    private void initListener() {
+        svSearch.setOnQueryTextListener(this);
     }
 
     private List<ItemList> getItems() {
@@ -64,5 +72,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.R
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("itemDetail", item);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.filter(newText);
+        return false;
     }
 }
