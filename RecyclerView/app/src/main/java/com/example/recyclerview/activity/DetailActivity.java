@@ -34,7 +34,7 @@ public class DetailActivity extends AppCompatActivity {
     private void initValues(){
         itemDetail = (ItemList) getIntent().getExtras().getSerializable("itemDetail");
 
-        imgItemDetail.setImageResource(itemDetail.getImgResource());
+        //imgItemDetail.setImageResource(itemDetail.getImgResource());
         tvTituloDetail.setText(itemDetail.getTitulo());
         tvDescripcionDetail.setText(itemDetail.getDescripcion());
     }

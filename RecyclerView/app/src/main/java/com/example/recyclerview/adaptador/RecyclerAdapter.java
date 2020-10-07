@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.recyclerview.R;
 import com.example.recyclerview.activity.DetailActivity;
 import com.example.recyclerview.model.ItemList;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     private List<ItemList> items;
     private List<ItemList> originalItems;
     private RecyclerItemClick itemClick;
+
+    private String doamin_image = "http://{tu_ip}:{tu_puerto}/drawable/";
 
     public RecyclerAdapter(List<ItemList> items, RecyclerItemClick itemClick) {
         this.items = items;
@@ -41,7 +44,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     @Override
     public void onBindViewHolder(@NonNull final RecyclerHolder holder, final int position) {
         final ItemList item = items.get(position);
-        holder.imgItem.setImageResource(item.getImgResource());
+        //holder.imgItem.setImageResource(item.getImgResource());
+        Picasso.get()
+                .load(doamin_image+item.getImgResource())
+                .into(holder.imgItem);
         holder.tvTitulo.setText(item.getTitulo());
         holder.tvDescripcion.setText(item.getDescripcion());
 
