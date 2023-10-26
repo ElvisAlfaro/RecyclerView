@@ -5,21 +5,28 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 import com.example.recyclerview.R;
 import com.example.recyclerview.adaptador.RecyclerAdapter;
 import com.example.recyclerview.model.ItemList;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecyclerAdapter.RecyclerItemClick, SearchView.OnQueryTextListener {
     private RecyclerView rvLista;
+    private FloatingActionButton fabAddItem;
     private SearchView svSearch;
     private RecyclerAdapter adapter;
     private List<ItemList> items;
+    private AlertDialog pdEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.R
     private void initViews(){
         rvLista = findViewById(R.id.rvLista);
         svSearch = findViewById(R.id.svSearch);
+        fabAddItem = findViewById(R.id.fab_add_item);
     }
 
     private void initValues() {
@@ -47,13 +55,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.R
 
     private void initListener() {
         svSearch.setOnQueryTextListener(this);
+        fabAddItem.setOnClickListener(v -> {
+            showPopUpAddItem();
+        });
     }
 
     private List<ItemList> getItems() {
         List<ItemList> itemLists = new ArrayList<>();
         itemLists.add(new ItemList("Saga de Broly", "Ultima pelicula de DB, peleas epicas.", R.drawable.saga_broly));
         itemLists.add(new ItemList("Super sayayines 4", "La ultima transformacion de la saga no canon.", R.drawable.ssj4s));
-        itemLists.add(new ItemList("Super Sayayiness Blues", "Goku y Vegeta, la transformacion de dioses.", R.drawable.ssj_blues));
+        /*itemLists.add(new ItemList("Super Sayayiness Blues", "Goku y Vegeta, la transformacion de dioses.", R.drawable.ssj_blues));
         itemLists.add(new ItemList("Goku ultrainstinto", "Infaltablñe power-up a Goku.", R.drawable.ultrainsitinto));
         itemLists.add(new ItemList("Super Vegeta Blue x2", "Diferentes transformaciones de super Vegeta.", R.drawable.super_vegeta));
         itemLists.add(new ItemList("Vegeta sapbe", "Vegeta sapbe o no sapbe xD.", R.drawable.vegeta_blue));
@@ -63,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.R
         itemLists.add(new ItemList("Goku ultrainstinto", "Infaltablñe power-up a Goku.", R.drawable.ultrainsitinto));
         itemLists.add(new ItemList("Super Vegeta Blue x2", "Diferentes transformaciones de super Vegeta.", R.drawable.super_vegeta));
         itemLists.add(new ItemList("Vegeta sapbe", "Vegeta sapbe o no sapbe xD.", R.drawable.vegeta_blue));
-
+*/
         return itemLists;
     }
 
@@ -83,5 +94,21 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.R
     public boolean onQueryTextChange(String newText) {
         adapter.filter(newText);
         return false;
+    }
+
+    private void showPopUpAddItem() {
+        View viewPopUp = LayoutInflater.from(this).inflate(R.layout.popup_edit_item, null);
+        EditText etTitle = viewPopUp.findViewById(R.id.et_title);
+        EditText etContent = viewPopUp.findViewById(R.id.et_content);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(viewPopUp)
+                .setPositiveButton("Guardar", (dialogInterface, i) ->
+                        adapter.addItem(new ItemList(etTitle.getText().toString(), etContent.getText().toString(), android.R.drawable.ic_menu_gallery))
+                )
+                .setCancelable(true);
+
+        pdEdit = builder.create();
+        pdEdit.show();
     }
 }
